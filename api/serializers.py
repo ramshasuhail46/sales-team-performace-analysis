@@ -8,3 +8,8 @@ class SalesDataSerializer(serializers.ModelSerializer):
 
 class FileUploadSerializer(serializers.Serializer):
     file = serializers.FileField()
+
+class SalesInsightRequestSerializer(serializers.Serializer):
+    data_type = serializers.ChoiceField(choices=['individual', 'team', 'organization'])
+    input = serializers.CharField()
+    employee_id = serializers.CharField(required=False)
