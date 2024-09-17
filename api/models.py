@@ -4,7 +4,7 @@ from django.db import models
 
 
 class SalesData(models.Model):
-    employee_name = models.CharField(max_length=255)
+    employee_name = models.CharField(blank=True, max_length=255)
     created = models.DateTimeField()
     dated = models.DateField()
     lead_taken = models.IntegerField()
