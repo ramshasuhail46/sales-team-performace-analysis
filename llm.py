@@ -65,7 +65,7 @@ class SalesInsightChat:
                     HumanMessagePromptTemplate.from_template("{question}")
                 ]
             )
-        elif data_type == "organization":
+        elif data_type == "time period":
             prompt_template = ChatPromptTemplate(
                 input_variables=['data', 'chat_history', 'question'],
                 messages=[
