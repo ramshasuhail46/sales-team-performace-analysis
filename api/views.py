@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from api.models import SalesData
-from api.serializers import SalesDataSerializer, FileUploadSerializer, SalesInsightRequestSerializer
+from api.serializers import RepPerformanceSerializer, SalesDataSerializer, FileUploadSerializer, SalesInsightRequestSerializer
 from llm import SalesInsightChat
 
 
@@ -70,9 +70,9 @@ class SalesInsightView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = SalesInsightRequestSerializer(data=request.data)
         if serializer.is_valid():
-            data_type = serializer.validated_data.get('data_type')
-            input_text = serializer.validated_data.get('input')
-            employee_id = serializer.validated_data.get('employee_id')
+            data_type = serializer.validated_data['data_type']
+            input_text = serializer.validated_data['input']
+            employee_id = serializer.validated_data['employee_id']
 
             if data_type == 'individual':
                 if not employee_id:
@@ -97,3 +97,25 @@ class SalesInsightView(APIView):
                 return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class RepPerformanceView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = RepPerformanceSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        rep_id = serializer.validated_data['rep_id']
+        try:
+            data = SalesData.objects.filter(employee_id=rep_id).values()
+            if not data:
+                return Response({'error': 'No data found for the given rep_id'}, status=status.HTTP_404_NOT_FOUND)
+
+            sales_insight_chat = SalesInsightChat()
+
+            data_type = 'individual'
+            input_text = 'Generate detailed performance analysis and feedback.'
+            insights = sales_insight_chat.chat(data, data_type, input_text)
+
+            return Response({'insights': insights}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
