@@ -50,7 +50,7 @@ Technology Stack:
 
 ## APIs 
 
-# 1. File Upload API
+### 1. File Upload API
 
     **Endpoint**: POST /upload-file/  
     **Purpose**: Upload CSV or JSON files containing sales data.  
@@ -75,7 +75,7 @@ Technology Stack:
 
     
 
-# 2. Sales Rep Performance API
+2. Sales Rep Performance API
 
     **Endpoint**: POST /rep-performance/  
     **Purpose**: Get detailed performance analysis for a specific sales representative.  
@@ -103,7 +103,7 @@ Technology Stack:
     }  
 
 
-# 3. Team Performance API
+3. Team Performance API
 
     **Endpoint**: GET /team-performance/  
     **Purpose**: Get an overall performance summary of the sales team.  
@@ -121,7 +121,7 @@ Technology Stack:
 
 
 
-# 4. Performance Trends API  
+4. Performance Trends API  
 
     **Endpoint**: POST /performance-trends/  
     **Purpose**: Analyze sales performance trends over a specified time period.  
