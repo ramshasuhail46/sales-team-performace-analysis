@@ -77,18 +77,17 @@ Technology Stack:
 
 2. Sales Rep Performance API
 
-    Endpoint: POST /rep-performance/
-    Purpose: Get detailed performance analysis for a specific sales representative.
-    Request:
-        rep_id: The ID of the sales representative.
-    Response:
-        Success: 200 OK with AI-generated performance insights.
-        Error: 404 Not Found if no data is found for the rep.
+    Endpoint: POST /rep-performance/  
+    Purpose: Get detailed performance analysis for a specific sales representative.  
+    Request:  
+        rep_id: The ID of the sales representative.  
+    Response:  
+        Success: 200 OK with AI-generated performance insights.  
+        Error: 404 Not Found if no data is found for the rep.  
 
-    Sample Request:
-    POST http://localhost:8000/api/rep-performance/
-
-    ```
+    Sample Request:  
+    POST http://localhost:8000/api/rep-performance/  
+    ```  
     Headers:
     Content-Type: application/json
 
@@ -98,42 +97,42 @@ Technology Stack:
     }
 
     ```
-    Sample response: 
-    {
-        "insights": "John Doe has generated 50 leads with $20,000 revenue. Suggest improving lead follow-up."
-    }
+    Sample response:   
+    {  
+        "insights": "John Doe has generated 50 leads with $20,000 revenue. Suggest improving lead follow-up."  
+    }  
 
 
 3. Team Performance API
 
-    Endpoint: GET /team-performance/
-    Purpose: Get an overall performance summary of the sales team.
-    Response:
-        Success: 200 OK with insights on total leads, tours, revenue, and more.
-        Error: 500 Internal Server Error for any processing errors.
+    Endpoint: GET /team-performance/  
+    Purpose: Get an overall performance summary of the sales team.  
+    Response:  
+        Success: 200 OK with insights on total leads, tours, revenue, and more.  
+        Error: 500 Internal Server Error for any processing errors.  
 
-    Sample Request:
-    GET http://localhost:8000/api/team-performance/
+    Sample Request:  
+    GET http://localhost:8000/api/team-performance/  
 
-    Sample Response:
-    {
-        "insights": "John Doe has generated 50 leads with $20,000 revenue. Suggest improving lead follow-up."
-    }
+    Sample Response:  
+    {  
+        "insights": "John Doe has generated 50 leads with $20,000 revenue. Suggest improving lead follow-up."  
+    }  
 
 
 
-4. Performance Trends API
+4. Performance Trends API  
 
-    Endpoint: POST /performance-trends/
-    Purpose: Analyze sales performance trends over a specified time period.
-    Request:
-        time_period: Must be either "monthly" or "quarterly".
-    Response:
-        Success: 200 OK with sales trends and forecasts based on the chosen period.
-        Error: 400 Bad Request for invalid time periods.
+    Endpoint: POST /performance-trends/  
+    Purpose: Analyze sales performance trends over a specified time period.  
+    Request:  
+        time_period: Must be either "monthly" or "quarterly".  
+    Response:  
+        Success: 200 OK with sales trends and forecasts based on the chosen period.  
+        Error: 400 Bad Request for invalid time periods.  
     
-    Sample Request:
-    POST http://localhost:8000/performance-trends/
+    Sample Request:  
+    POST http://localhost:8000/performance-trends/  
 
     ```
     Headers:
@@ -145,15 +144,15 @@ Technology Stack:
     "time_period": "monthly"
     }
     ```
-    Sample Response:
-    {
-        "insights": "In the past three months, revenue increased by 10%, leads grew by 15%, and tours booked remained stable. A focus on converting leads to tours is recommended..."
-    }
+    Sample Response:  
+    {  
+        "insights": "In the past three months, revenue increased by 10%, leads grew by 15%, and tours booked remained stable. A focus on converting leads to tours is recommended..."  
+    }  
 
 
 ## Features
 
-- Flexible Data Analysis: Supports multiple data types (individual, team, time period) with custom prompt generation.
+- Flexible Data Analysis: Supports multiple data types (individual, team, time period) with custom prompt generation.  
 - Conversation Memory: Uses ConversationSummaryBufferMemory to maintain chat context and summarize key points
 - Sales Insight Generation: Offers actionable insights on sales performance (individual, team, or time period)
 
