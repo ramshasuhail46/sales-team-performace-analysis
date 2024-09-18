@@ -3,10 +3,12 @@ import json
 from io import StringIO
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.db.models import Sum
 from rest_framework import status
 from api.models import SalesData
-from api.serializers import SalesDataSerializer, FileUploadSerializer, SalesInsightRequestSerializer
+from api.serializers import PerformanceTrendSerializer, RepPerformanceSerializer, SalesDataSerializer, FileUploadSerializer, SalesInsightRequestSerializer
 from llm import SalesInsightChat
+from django.db.models.functions import TruncMonth, TruncQuarter
 
 
 class FileUploadView(APIView):
@@ -66,34 +68,98 @@ class FileUploadView(APIView):
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class SalesInsightView(APIView):
+class RepPerformanceView(APIView):
     def post(self, request, *args, **kwargs):
-        serializer = SalesInsightRequestSerializer(data=request.data)
-        if serializer.is_valid():
-            data_type = serializer.validated_data.get('data_type')
-            input_text = serializer.validated_data.get('input')
-            employee_id = serializer.validated_data.get('employee_id')
+        serializer = RepPerformanceSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            if data_type == 'individual':
-                if not employee_id:
-                    return Response({'error': 'Employee ID required for individual insights'}, status=status.HTTP_400_BAD_REQUEST)
-                data = SalesData.objects.filter(
-                    employee_id=employee_id).values()
-                print("data: ", data)
-            elif data_type == 'team':
-                data = SalesData.objects.all().values()
-                print("data: ", data)
-            elif data_type == 'organization':
-                data = SalesData.objects.all().values()
-                print("data: ", data)
+        rep_id = serializer.validated_data['rep_id']
+        try:
+            data = SalesData.objects.filter(employee_id=rep_id).values()
+            if not data:
+                return Response({'error': 'No data found for the given rep_id'}, status=status.HTTP_404_NOT_FOUND)
 
             sales_insight_chat = SalesInsightChat()
 
-            try:
-                print("data before sending into function: ", data)
-                insights = sales_insight_chat.chat(data, data_type, input_text)
-                return Response({'insights': insights}, status=status.HTTP_200_OK)
-            except Exception as e:
-                return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
+            data_type = 'individual'
+            input_text = 'Generate detailed performance analysis and feedback.'
+            insights = sales_insight_chat.chat(data, data_type, input_text)
+
+            return Response({'insights': insights}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class TeamPerformanceView(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            data = SalesData.objects.all()
+            sales_insight_chat = SalesInsightChat()
+
+            total_leads = data.aggregate(total_leads=Sum('lead_taken'))[
+                'total_leads'] or 0
+            total_tours = data.aggregate(total_tours=Sum('tours_booked'))[
+                'total_tours'] or 0
+            total_revenue = data.aggregate(total_revenue=Sum('revenue_confirmed'))[
+                'total_revenue'] or 0
+
+            total_reps = data.values('employee_id').distinct().count()
+            average_revenue_per_rep = total_revenue / total_reps if total_reps > 0 else 0
+
+            summary_data = {
+                'total_leads': total_leads,
+                'total_tours': total_tours,
+                'total_revenue': total_revenue,
+                'total_representatives': total_reps,
+                'average_revenue_per_representative': average_revenue_per_rep,
+            }
+            data_type = 'team'
+            input_text = 'Generate a summary of the sales team’s overall performance.'
+            insights = sales_insight_chat.chat(
+                summary_data, data_type, input_text)
+
+            return Response({'insights': insights}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class PerformanceTrendsView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = PerformanceTrendSerializer(data=request.data)
+        if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        time_period = serializer.validated_data['time_period']
+        if time_period not in ['monthly', 'quarterly']:
+            return Response({'error': 'Invalid time_period parameter. Must be "monthly" or "quarterly".'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            if time_period == 'monthly':
+                aggregated_data = SalesData.objects.annotate(
+                    period=TruncMonth('dated')
+                ).values('period').annotate(
+                    total_revenue=Sum('revenue_confirmed'),
+                    total_leads=Sum('lead_taken'),
+                    total_tours=Sum('tours_booked')
+                ).order_by('period')
+
+            elif time_period == 'quarterly':
+                aggregated_data = SalesData.objects.annotate(
+                    period=TruncQuarter('dated')
+                ).values('period').annotate(
+                    total_revenue=Sum('revenue_confirmed'),
+                    total_leads=Sum('lead_taken'),
+                    total_tours=Sum('tours_booked')
+                ).order_by('period')
+
+            sales_insight_chat = SalesInsightChat()
+            data_type = 'time period'
+            input_text = 'Analyze sales data and provide insights and forecasting based on the specified time period.'
+            insights = sales_insight_chat.chat(
+                aggregated_data, data_type, input_text)
+
+            return Response({'insights': insights}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
