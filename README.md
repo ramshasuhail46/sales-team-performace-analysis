@@ -70,9 +70,7 @@ Technology Stack:
     POST http://localhost:8000/api/upload/  
 
     ```
-    curl -X POST http://localhost:8000/upload-file/ \
-        -H "Content-Type: multipart/form-data" \
-        -F "file=@/path/to/your/file.csv"
+    curl -X POST -F "file=@/path/to/your/sales_performance_data.csv" http://127.0.0.1:8000/api/upload/
     ```
     Sample Response:  
     {  
