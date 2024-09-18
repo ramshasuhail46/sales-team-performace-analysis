@@ -1,2 +1,7 @@
 django 
 djangorestframework
+python-dotenv
+langchain
+langchain-community
+langchain-groq
+transformers
