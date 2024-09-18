@@ -156,7 +156,7 @@ Technology Stack:
 
 ## Features
 
-- Flexible Data Analysis: Supports multiple data types (individual, team, time period) with custom prompt generation.  
+- Flexible Data Analysis: Supports multiple data types (csv, json) with custom prompt generation.  
 - Conversation Memory: Uses ConversationSummaryBufferMemory to maintain chat context and summarize key points
 - Sales Insight Generation: Offers actionable insights on sales performance (individual, team, or time period)
 
