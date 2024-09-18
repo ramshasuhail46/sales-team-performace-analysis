@@ -52,11 +52,11 @@ Technology Stack:
 
 1. File Upload API
 
-    Endpoint: POST /upload-file/  
-    Purpose: Upload CSV or JSON files containing sales data.  
-    Request:  
-        file: The sales data file in CSV or JSON format.  
-    Response:  
+    **Endpoint**: POST /upload-file/  
+    **Purpose**: Upload CSV or JSON files containing sales data.  
+    **Request**:  
+      file: The sales data file in CSV or JSON format.  
+    **Response**:  
         Success: 200 OK with a message indicating the file was processed.  
         Error: 400 Bad Request for invalid data or file format.  
 
@@ -77,11 +77,11 @@ Technology Stack:
 
 2. Sales Rep Performance API
 
-    Endpoint: POST /rep-performance/  
-    Purpose: Get detailed performance analysis for a specific sales representative.  
-    Request:  
+    **Endpoint**: POST /rep-performance/  
+    **Purpose**: Get detailed performance analysis for a specific sales representative.  
+    **Request**:  
         rep_id: The ID of the sales representative.  
-    Response:  
+    **Response**:  
         Success: 200 OK with AI-generated performance insights.  
         Error: 404 Not Found if no data is found for the rep.  
 
@@ -105,9 +105,9 @@ Technology Stack:
 
 3. Team Performance API
 
-    Endpoint: GET /team-performance/  
-    Purpose: Get an overall performance summary of the sales team.  
-    Response:  
+    **Endpoint**: GET /team-performance/  
+    **Purpose**: Get an overall performance summary of the sales team.  
+    **Response**:  
         Success: 200 OK with insights on total leads, tours, revenue, and more.  
         Error: 500 Internal Server Error for any processing errors.  
 
@@ -123,11 +123,11 @@ Technology Stack:
 
 4. Performance Trends API  
 
-    Endpoint: POST /performance-trends/  
-    Purpose: Analyze sales performance trends over a specified time period.  
-    Request:  
+    **Endpoint**: POST /performance-trends/  
+    **Purpose**: Analyze sales performance trends over a specified time period.  
+    **Request**:  
         time_period: Must be either "monthly" or "quarterly".  
-    Response:  
+    **Response**:  
         Success: 200 OK with sales trends and forecasts based on the chosen period.  
         Error: 400 Bad Request for invalid time periods.  
     
