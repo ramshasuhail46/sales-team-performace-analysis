@@ -6,8 +6,9 @@ from rest_framework.response import Response
 from django.db.models import Sum
 from rest_framework import status
 from api.models import SalesData
-from api.serializers import RepPerformanceSerializer, SalesDataSerializer, FileUploadSerializer, SalesInsightRequestSerializer
+from api.serializers import PerformanceTrendSerializer, RepPerformanceSerializer, SalesDataSerializer, FileUploadSerializer, SalesInsightRequestSerializer
 from llm import SalesInsightChat
+from django.db.models.functions import TruncMonth, TruncQuarter
 
 
 class FileUploadView(APIView):
@@ -119,5 +120,46 @@ class TeamPerformanceView(APIView):
                 summary_data, data_type, input_text)
 
             return Response({'insights': insights}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class PerformanceTrendsView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = PerformanceTrendSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        time_period = serializer.validated_data['time_period']
+        if time_period not in ['monthly', 'quarterly']:
+            return Response({'error': 'Invalid time_period parameter. Must be "monthly" or "quarterly".'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            if time_period == 'monthly':
+                aggregated_data = SalesData.objects.annotate(
+                    period=TruncMonth('dated')
+                ).values('period').annotate(
+                    total_revenue=Sum('revenue_confirmed'),
+                    total_leads=Sum('lead_taken'),
+                    total_tours=Sum('tours_booked')
+                ).order_by('period')
+
+            elif time_period == 'quarterly':
+                aggregated_data = SalesData.objects.annotate(
+                    period=TruncQuarter('dated')
+                ).values('period').annotate(
+                    total_revenue=Sum('revenue_confirmed'),
+                    total_leads=Sum('lead_taken'),
+                    total_tours=Sum('tours_booked')
+                ).order_by('period')
+
+            sales_insight_chat = SalesInsightChat()
+            data_type = 'time period'
+            input_text = 'Analyze sales data and provide insights and forecasting based on the specified time period.'
+            insights = sales_insight_chat.chat(
+                aggregated_data, data_type, input_text)
+
+            return Response({'insights': insights}, status=status.HTTP_200_OK)
+
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -21,3 +21,7 @@ class SalesInsightRequestSerializer(serializers.Serializer):
 
 class RepPerformanceSerializer(serializers.Serializer):
     rep_id = serializers.CharField(required=True)
+
+
+class PerformanceTrendSerializer(serializers.Serializer):
+    time_period = serializers.CharField()
