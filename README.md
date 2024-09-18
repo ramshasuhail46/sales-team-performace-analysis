@@ -50,7 +50,7 @@ Technology Stack:
 
 ## APIs 
 
-### 1. File Upload API
+1. File Upload API
 
     **Endpoint**: POST /upload-file/  
     **Purpose**: Upload CSV or JSON files containing sales data.  
