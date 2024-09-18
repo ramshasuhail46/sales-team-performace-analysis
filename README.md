@@ -19,24 +19,30 @@ To run the application locally:
    ```
    python3 -m venv .venv 
    ```
-
-2. Install dependencies:
+2. Activate the enviorment:
+   ```
+   source .venv/bin/activate
+   ```
+3. Install dependencies:
    ```
    pip3 install -r requirements.txt
    ```
-
-3. Create a superuser to access admin-panel on URL (http://127.0.0.1:8000/admin) by following command:
+4. Migrate the changes made for creating superuser (to access admin panel of django):
+   ```
+   python3 manage.py migrate
+   ```
+5. Create a superuser to access admin-panel on URL (http://127.0.0.1:8000/admin) by following command:
    ```
    python3 manage.py createsuperuser
    ```
-4. Set API KEY in .env 
+6. Set API KEY in .env 
 
-5. Run the project by following command:
+7. Run the project by following command:
    ```
    python3 manage.py runserver
    ```
 
-6. Open a web browser and navigate to the URL provided in the terminal (usually http://127.0.0.1:8000).
+8. Open a web browser and navigate to the URL provided in the terminal (usually http://127.0.0.1:8000).
 
 ## Usage
 
@@ -52,7 +58,7 @@ Technology Stack:
 
 1. File Upload API
 
-    **Endpoint**: POST /upload-file/  
+    **Endpoint**: POST /api/upload/  
     **Purpose**: Upload CSV or JSON files containing sales data.  
     **Request**:  
       file: The sales data file in CSV or JSON format.  
@@ -61,7 +67,7 @@ Technology Stack:
         Error: 400 Bad Request for invalid data or file format.  
 
     Sample Request:  
-    POST http://localhost:8000/upload-file/  
+    POST http://localhost:8000/api/upload/  
 
     ```
     curl -X POST http://localhost:8000/upload-file/ \
@@ -77,7 +83,7 @@ Technology Stack:
 
 2. Sales Rep Performance API
 
-    **Endpoint**: POST /rep-performance/  
+    **Endpoint**: POST /api/rep_performance/  
     **Purpose**: Get detailed performance analysis for a specific sales representative.  
     **Request**:  
         rep_id: The ID of the sales representative.  
@@ -86,7 +92,7 @@ Technology Stack:
         Error: 404 Not Found if no data is found for the rep.  
 
     Sample Request:  
-    POST http://localhost:8000/api/rep-performance/  
+    POST http://localhost:8000/api/rep_performance/  
     ```  
     Headers:
     Content-Type: application/json
@@ -105,14 +111,14 @@ Technology Stack:
 
 3. Team Performance API
 
-    **Endpoint**: GET /team-performance/  
+    **Endpoint**: GET /api/team_performance/  
     **Purpose**: Get an overall performance summary of the sales team.  
     **Response**:  
         Success: 200 OK with insights on total leads, tours, revenue, and more.  
         Error: 500 Internal Server Error for any processing errors.  
 
     Sample Request:  
-    GET http://localhost:8000/api/team-performance/  
+    GET http://localhost:8000/api/team_performance/  
 
     Sample Response:  
     {  
@@ -123,7 +129,7 @@ Technology Stack:
 
 4. Performance Trends API  
 
-    **Endpoint**: POST /performance-trends/  
+    **Endpoint**: POST /api/performance_trends/  
     **Purpose**: Analyze sales performance trends over a specified time period.  
     **Request**:  
         time_period: Must be either "monthly" or "quarterly".  
@@ -132,7 +138,7 @@ Technology Stack:
         Error: 400 Bad Request for invalid time periods.  
     
     Sample Request:  
-    POST http://localhost:8000/performance-trends/  
+    POST http://localhost:8000/api/performance_trends/  
 
     ```
     Headers:
