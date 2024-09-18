@@ -43,35 +43,35 @@ To run the application locally:
 The project is built with Django REST Framework to create APIs for uploading and analyzing sales data. It stores the data in a SQLite database. For AI-powered insights, it uses the LangChain framework, which integrates with the ChatGroq AI model. This model analyzes sales data based on customizable prompts, providing performance insights for individual reps, teams, or trends over time. The backend supports data uploads in CSV or JSON formats, which are processed and stored for analysis.
 
 Technology Stack:
-    Python
-    LangChain Framework
-    ChatGroq model
+    Python, 
+    LangChain Framework, 
+    ChatGroq model, 
     Django REST Framework
 
 ## APIs 
 
 1. File Upload API
 
-    Endpoint: POST /upload-file/
-    Purpose: Upload CSV or JSON files containing sales data.
-    Request:
-        file: The sales data file in CSV or JSON format.
-    Response:
-        Success: 200 OK with a message indicating the file was processed.
-        Error: 400 Bad Request for invalid data or file format.
+    Endpoint: POST /upload-file/  
+    Purpose: Upload CSV or JSON files containing sales data.  
+    Request:  
+        file: The sales data file in CSV or JSON format.  
+    Response:  
+        Success: 200 OK with a message indicating the file was processed.  
+        Error: 400 Bad Request for invalid data or file format.  
 
-    Sample Request
-    POST http://localhost:8000/upload-file/
+    Sample Request:  
+    POST http://localhost:8000/upload-file/  
 
     ```
     curl -X POST http://localhost:8000/upload-file/ \
         -H "Content-Type: multipart/form-data" \
         -F "file=@/path/to/your/file.csv"
     ```
-    Sample Response:
-    {
-        "message": "CSV file processed successfully"
-    }
+    Sample Response:  
+    {  
+        "message": "CSV file processed successfully"  
+    }  
 
     
 
